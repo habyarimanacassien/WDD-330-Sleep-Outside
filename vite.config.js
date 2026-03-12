@@ -31,13 +31,20 @@ export default defineConfig({
 
   plugins: [
     {
-      name: "copy-json-to-dist",
+      name: "copy-static-folders-to-dist",
       closeBundle() {
-        const from = resolve(__dirname, "src/json");
-        const to = resolve(__dirname, "dist/json");
+        const jsonFrom = resolve(__dirname, "src/json");
+        const jsonTo = resolve(__dirname, "dist/json");
 
-        if (existsSync(from)) {
-          cpSync(from, to, { recursive: true });
+        const imagesFrom = resolve(__dirname, "src/images");
+        const imagesTo = resolve(__dirname, "dist/images");
+
+        if (existsSync(jsonFrom)) {
+          cpSync(jsonFrom, jsonTo, { recursive: true });
+        }
+
+        if (existsSync(imagesFrom)) {
+          cpSync(imagesFrom, imagesTo, { recursive: true });
         }
       },
     },
