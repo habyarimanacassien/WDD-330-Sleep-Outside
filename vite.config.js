@@ -1,5 +1,6 @@
 import { resolve } from "path";
 import { defineConfig } from "vite";
+import { cpSync, existsSync } from "fs";
 
 export default defineConfig({
   root: "src/",
@@ -27,4 +28,18 @@ export default defineConfig({
       },
     },
   },
+
+  plugins: [
+    {
+      name: "copy-json-to-dist",
+      closeBundle() {
+        const from = resolve(__dirname, "src/json");
+        const to = resolve(__dirname, "dist/json");
+
+        if (existsSync(from)) {
+          cpSync(from, to, { recursive: true });
+        }
+      },
+    },
+  ],
 });
