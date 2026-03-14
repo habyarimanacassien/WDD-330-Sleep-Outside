@@ -262,6 +262,11 @@ footer {
   padding: 1em;
 }
 
+/* TEAM NOTE:
+Utility class used to dynamically show or hide elements from JavaScript.
+Currently used in the cart page to hide the cart total section when the cart is empty.
+*/
+
 .hide {
   display: none;
 }

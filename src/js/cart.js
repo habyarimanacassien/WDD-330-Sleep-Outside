@@ -1,4 +1,22 @@
+// TEAM NOTE:
+// This file was updated to fix the error that happened when the cart was empty.
+// Previously the app tried to use .map() on a null value from localStorage,
+// which caused a runtime error.
+//
+// Now we safely default to an empty array:
+// const cartItems = getLocalStorage("so-cart") || [];
+//
+// We also added logic to:
+// - Show a message when the cart is empty
+// - Dynamically calculate and display the cart total
+// - Show or hide the cart footer using the CSS utility class `.hide`
+//
+// This improves UX and prevents crashes.
+
 import { getLocalStorage } from "./utils.mjs";
+
+// Renders cart items dynamically and controls the visibility of the cart total section.
+// If there are no items, it displays an empty cart message instead of breaking the app.
 
 function renderCartContents() {
   const cartItems = getLocalStorage("so-cart") || [];
