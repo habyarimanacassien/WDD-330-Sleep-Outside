@@ -14,6 +14,7 @@
 // This improves UX and prevents crashes.
 
 import { getLocalStorage } from "./utils.mjs";
+import { loadHeaderFooter } from "./utils.mjs";
 
 // Renders cart items dynamically and controls the visibility of the cart total section.
 // If there are no items, it displays an empty cart message instead of breaking the app.
@@ -58,3 +59,4 @@ function cartItemTemplate(item) {
 }
 
 renderCartContents();
+loadHeaderFooter();
