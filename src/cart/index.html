@@ -53,6 +53,8 @@
           <span class="cart-count" aria-label="items in cart">0</span>
         </a>
       </div>
+    <header class="divider" id="main-header">
+ 
     </header>
 
     <main class="divider">
@@ -91,9 +93,20 @@
             <p class="cart-card__price">$199.99</p>
           </li> -->
         </ul>
+
+        <!-- TEAM NOTE:
+This footer was added to display the cart total dynamically.
+It is hidden by default using the `.hide` CSS class.
+JavaScript will remove the class when there are items in the cart.
+This element will also be reused later for the Checkout button.
+-->
+
+        <div class="cart-footer hide">
+        <p class="cart-total"></p>
+        </div>
       </section>
     </main>
 
-    <footer>&copy;NOT a real business</footer>
+    <footer id="main-footer"></footer>
   </body>
 </html>

@@ -22,6 +22,7 @@ export function setClick(selector, callback) {
   qs(selector).addEventListener("click", callback);
 }
 // function to get the parameters from the URL when requested
+
 export function getParam(param) {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
@@ -35,4 +36,36 @@ export function renderListWithTemplate(templateFn, parentElement, list, position
     const html = templateFn(item);
     parentElement.insertAdjacentHTML(position, html);
   });
+}
+export function renderListWithTemplate(templateFn, parentElement, list, position = "afterbegin", clear = false,) {
+  if (clear) {
+    parentElement.innerHTML = "";
+  }
+  const htmlStrings = list.map(templateFn);
+  parentElement.insertAdjacentHTML(position, htmlStrings.join(""));
+}
+
+export function renderWithTemplate(template, parentElement, data, callback) {
+  parentElement.innerHTML = template;
+  if(callback) {
+    callback(data);
+  }
+}
+
+export async function loadTemplate(path) {
+  const res = await fetch(path);
+  const template = await res.text();
+  return template;
+}
+
+
+export async function loadHeaderFooter() {
+  const headerTemplate = await loadTemplate("/partials/header.html")
+  const footerTemplate = await loadTemplate("/partials/footer.html")
+ 
+  const headerElement = document.getElementById("main-header");
+  const footerElement = document.getElementById("main-footer");
+ 
+  renderWithTemplate(headerTemplate, headerElement);
+  renderWithTemplate(footerTemplate, footerElement);
 }
