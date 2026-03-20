@@ -1,7 +1,5 @@
 import { getLocalStorage } from "./utils.mjs";
 
-LocalStorage from "./utils.mjs";
-
 export function updateCartCount() {
     const badge = document.querySelector(".cart-count");
     if (!badge) return; // Exit if no badge element is found
