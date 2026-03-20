@@ -24,12 +24,18 @@ export default class ProductList {
 }
 
 function productCardTemplate(product) {
-  return `<li class="product-card">
+    const isDiscounted = Number(product.FinalPrice) < Number(product.SuggestedRetailPrice);  
+    const savingsAmount = isDiscounted ? (Number(product.SuggestedRetailPrice) - Number(product.FinalPrice)).toFixed(2) : null;
+    const savingsPercent = isDiscounted ? Math.round((Number(product.SuggestedRetailPrice) - Number(product.FinalPrice)) / Number(product.SuggestedRetailPrice) * 100) : null;
+
+return `<li class="product-card${isDiscounted ? " product-card--sale" : ""}">
         <a href="product_pages/?product=${product.Id}">
             <img src="${product.Image}" alt="Image of ${product.NameWithoutBrand}">
             <h2 class="card__brand">${product.Brand?.Name ?? ""}</h2>
             <h3 class="card__name">${product.NameWithoutBrand}</h3>
-            <p class="product-card__price">$${Number(product.FinalPrice).toFixed(2)}</p>
+            <div class="product-card__pricing">${isDiscounted ? `<span class="price price--retail">$${Number(product.SuggestedRetailPrice).toFixed(2)}</span> ` : ""}
+            <span class="price price---final">$${Number(product.FinalPrice).toFixed(2)}</span>${isDiscounted ? `<span class="badge badge--sale">Save $${savingsAmount} (${savingsPercent}% off)</span>` : ""}
+          </div>
         </a>
     </li>`;
 }
