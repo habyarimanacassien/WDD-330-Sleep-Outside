@@ -11,7 +11,6 @@
     "lint": "eslint *.js src/**/*.js",
     "format": "prettier --ignore-path ./.gitignore --write \"./**/*.{html,json,js,ts,css}\"",
     "test": "jest",
-    "preview": "vite preview"
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
 
