@@ -1,21 +1,28 @@
 // TEAM NOTE:
-// This file was updated to fix the error that happened when the cart was empty.
-// Previously the app tried to use .map() on a null value from localStorage,
-// which caused a runtime error.
+// This file was simplified after refactoring the shopping cart into its own module.
 //
-// Now we safely default to an empty array:
-// const cartItems = getLocalStorage("so-cart") || [];
+// Previously, cart.js contained all logic related to:
+// - Reading localStorage
+// - Rendering cart items
+// - Calculating totals
+// - Manipulating DOM directly
 //
-// We also added logic to:
-// - Show a message when the cart is empty
-// - Dynamically calculate and display the cart total
-// - Show or hide the cart footer using the CSS utility class `.hide`
+// Now cart.js acts only as an entry point that:
 //
-// This improves UX and prevents crashes.
+// - Loads the shared header and footer using loadHeaderFooter()
+// - Queries required DOM elements
+// - Creates an instance of the ShoppingCart class
+// - Calls init() to render the cart
+//
+// This separation of concerns keeps the file lightweight and aligns
+// the cart implementation with the modular architecture used elsewhere
+// in the application.
+
 
 import { getLocalStorage } from "./utils.mjs";
 import { updateCartCount } from "./cartIndicator.mjs";
 import { loadHeaderFooter } from "./utils.mjs";
+import ShoppingCart from "./ShoppingCart.mjs";
 
 // Renders cart items dynamically and controls the visibility of the cart total section.
 // If there are no items, it displays an empty cart message instead of breaking the app.
@@ -62,3 +69,24 @@ function cartItemTemplate(item) {
 renderCartContents();
 updateCartCount();
 loadHeaderFooter();
+
+const productList = document.querySelector(".product-list");
+const cartFooter = document.querySelector(".cart-footer");
+const cartTotal = document.querySelector(".cart-total");
+
+// Create a ShoppingCart instance by passing the DOM elements it needs to control.
+
+const shoppingCart = new ShoppingCart(
+  productList,
+  cartFooter,
+  cartTotal
+);
+
+// Initialize the cart rendering process.
+
+shoppingCart.init();
+
+
+// NOTE FOR TEAM:
+// Future cart features (remove item, update quantity, checkout validation)
+// should be implemented inside ShoppingCart.mjs to maintain architectural consistency.

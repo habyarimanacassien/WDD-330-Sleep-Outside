@@ -10,12 +10,8 @@ export default class ProductList {
   }
 
   async init() {
-    try {
-      const list = await this.dataSource.getData(this.category);
-      this.renderList(list);
-    } catch (error) {
-      console.error("Error loading product data:", error);
-    }
+   const list = await this.dataSource.getData(this.category);
+    this.renderList(list);
   }
 
   renderList(productList) {
@@ -45,14 +41,13 @@ function productCardTemplate(product) {
       )
     : null;
 
-  return `<li class="product-card${isDiscounted ? " product-card--sale" : ""}">
-        <a href="../product_pages/index.html?product=${product.Id}">
-            <img src="${product.Images.PrimaryMedium}" alt="${product.Name}">
-            <h2 class="card__brand">${product.Brand?.Name ?? ""}</h2>
-            <h3 class="card__name">${product.NameWithoutBrand}</h3>
-            <div class="product-card__pricing">${isDiscounted ? `<span class="price price--retail">$${Number(product.SuggestedRetailPrice).toFixed(2)}</span> ` : ""}
-            <span class="price price---final">$${Number(product.FinalPrice).toFixed(2)}</span>${isDiscounted ? `<span class="badge badge--sale">Save $${savingsAmount} (${savingsPercent}% off)</span>` : ""}
-          </div>
-        </a>
-    </li>`;
+  productCardTemplate(product) {
+  return `<li class="product-card">
+    <a href="/product_pages/index.html?product=${product.Id}">
+      <img src="${product.Images.PrimaryMedium}" alt="${product.Name}">
+      <h3 class="card__brand">${product.Brand.Name}</h3>
+      <h2 class="card__name">${product.NameWithoutBrand}</h2>
+      <p class="product-card__price">$${product.FinalPrice}</p>
+    </a>
+  </li>`;
 }
