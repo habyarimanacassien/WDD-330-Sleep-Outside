@@ -1,4 +1,4 @@
-import ProductData from "./ProductData.mjs";
+import ProductData from "./ExternalServices.mjs";
 import { renderListWithTemplate } from "./utils.mjs";
 
 export default class ProductList {
