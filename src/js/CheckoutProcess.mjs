@@ -58,5 +58,43 @@ export default class CheckoutProcess {
     taxElement.innerText = `$${this.tax.toFixed(2)}`;
     shippingElement.innerText = `$${this.shipping.toFixed(2)}`;
     orderTotalElement.innerText = `$${this.orderTotal.toFixed(2)}`;
-  }
+   }
+
+async checkout(form) {
+  const order = formDataToJSON(form);
+ 
+  order.orderDate = new Date().toISOString();
+  order.items = packageItems(this.list);
+  order.orderTotal = this.orderTotal.toFixed(2);
+  order.shipping = this.shipping;
+  order.tax = this.tax.toFixed(2);
+ 
+  const services = new ExternalServices();
+  const result = await services.checkout(order);
+ 
+  return result;
 }
+
+   // takes the items currently stored in the cart (localstorage) and returns them in a simplified form.
+function packageItems(items) {
+    // convert the list of products from localStorage to the simpler form required for the checkout process.
+    // An Array.map would be perfect for this process. 
+    return items.map((item) => ({
+        id: item.Id,
+        name: item.Name,
+        price: item.FinalPrice,
+        quantity: 1
+    }));
+
+// takes a form element and returns an object where the key is the "name" of the form input.
+function formDataToJSON(formElement) {
+  const formData = new FormData(formElement),
+    convertedJSON = {};
+
+  formData.forEach(function (value, key) {
+    convertedJSON[key] = value;
+  });
+
+  return convertedJSON;
+} 
+    
