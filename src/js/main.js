@@ -10,9 +10,15 @@ const productList = new ProductList(
   productData,
   document.querySelector(".product-list"),
 );
-productList.init();
-updateCartCount();
-loadHeaderFooter();
 
-const alert = new Alert("/json/alerts.json");
-alert.loadAlerts();
+async function init() {
+  await loadHeaderFooter();
+  updateCartCount();
+
+  productList.init();
+
+  const alert = new Alert("/json/alerts.json");
+  alert.loadAlerts();
+}
+
+init();
