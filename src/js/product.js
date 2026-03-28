@@ -5,9 +5,12 @@ import { updateCartCount } from "./cartIndicator.mjs";
 
 const productId = getParam("product");
 const dataSource = new ProductData();
-
 const product = new ProductDetails(productId, dataSource);
-product.init();
-updateCartCount();
 
-loadHeaderFooter();
+async function init() {
+  await loadHeaderFooter();
+  updateCartCount();
+  product.init();
+}
+
+init();
