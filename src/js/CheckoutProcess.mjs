@@ -1,3 +1,6 @@
+import { getLocalStorage } from "./utils.mjs";
+import ProductData from "./ExternalServices.mjs";
+
 export default class CheckoutProcess {
   constructor(key, outputSelector) {
     this.key = key;
@@ -10,31 +13,31 @@ export default class CheckoutProcess {
   }
 
   init() {
-    this.list = getLocalStorage(this.key);
+    this.list = getLocalStorage(this.key) || [];
     this.calculateItemSubTotal();
+    this.calculateOrderTotal();
   }
 
   calculateItemSubTotal() {
-    // calculate and display the total dollar amount of the items in the cart, and the number of items.
-   this.itemTotal = this.list.reduce((sum, item) => sum + item.FinalPrice, 0);
+    // Sum item totals.
+    this.itemTotal = this.list.reduce((sum, item) => sum + Number(item.FinalPrice) * (item.quantity || 1), 0);
  
-  const subtotalElement = document.querySelector(
-    `${this.outputSelector} #subtotal`
-  );
-  const itemCountElement = document.querySelector(
-    `${this.outputSelector} #itemCount`
-  );
+    const subtotalElement = document.querySelector(
+      `${this.outputSelector} #subtotal`
+    );
+    const itemCountElement = document.querySelector(
+      `${this.outputSelector} #itemCount`
+    );
  
-  subtotalElement.innerText = `$${this.itemTotal.toFixed(2)}`;
-  if (itemCountElement) {
-    itemCountElement.innerText = this.list.length;
+    if (subtotalElement) subtotalElement.innerText = `$${this.itemTotal.toFixed(2)}`;
+    if (itemCountElement) {
+      const count = this.list.reduce((sum, item) => sum + (item.quantity || 1), 0);
+      itemCountElement.innerText = count;
+    }
   }
-} 
-  }
-
+  
   calculateOrderTotal() {
-    // calculate the tax and shipping amounts. Add those to the cart total to figure out the order total
-    const itemCount = this.list.length;
+    const itemCount = this.list.reduce((sum, item) => sum + (item.quantity || 1), 0);
 
     this.tax = (this.itemTotal * 0.06)
     this.shipping = itemCount > 0 ? 10 + (itemCount - 1) * 2 : 0;
@@ -55,36 +58,34 @@ export default class CheckoutProcess {
       `${this.outputSelector} #orderTotal`
     );
  
-    taxElement.innerText = `$${this.tax.toFixed(2)}`;
-    shippingElement.innerText = `$${this.shipping.toFixed(2)}`;
-    orderTotalElement.innerText = `$${this.orderTotal.toFixed(2)}`;
-   }
+    if (taxElement) taxElement.innerText = `$${this.tax.toFixed(2)}`;
+    if (shippingElement) shippingElement.innerText = `$${this.shipping.toFixed(2)}`;
+    if (orderTotalElement) orderTotalElement.innerText = `$${this.orderTotal.toFixed(2)}`;
+  }
 
-async checkout(form) {
-  const order = formDataToJSON(form);
+  async checkout(form) {
+    const order = formDataToJSON(form);
+    order.orderDate = new Date().toISOString();
+    order.items = packageItems(this.list);
+    order.orderTotal = this.orderTotal.toFixed(2);
+    order.shipping = this.shipping;
+    order.tax = this.tax.toFixed(2);
  
-  order.orderDate = new Date().toISOString();
-  order.items = packageItems(this.list);
-  order.orderTotal = this.orderTotal.toFixed(2);
-  order.shipping = this.shipping;
-  order.tax = this.tax.toFixed(2);
- 
-  const services = new ExternalServices();
-  const result = await services.checkout(order);
- 
-  return result;
-}
+    const services = new ProductData();
+    const result = await services.checkout(order);
+    return result;
+  }
+}  
 
-   // takes the items currently stored in the cart (localstorage) and returns them in a simplified form.
+// Helpers   
 function packageItems(items) {
-    // convert the list of products from localStorage to the simpler form required for the checkout process.
-    // An Array.map would be perfect for this process. 
-    return items.map((item) => ({
-        id: item.Id,
-        name: item.Name,
-        price: item.FinalPrice,
-        quantity: 1
-    }));
+  return items.map((item) => ({
+    id: item.Id,
+    name: item.Name,
+    price: Number(item.FinalPrice),
+    quantity: item.quantity || 1,
+  }));
+}
 
 // takes a form element and returns an object where the key is the "name" of the form input.
 function formDataToJSON(formElement) {

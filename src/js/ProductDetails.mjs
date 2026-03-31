@@ -19,12 +19,12 @@ export default class ProductDetails {
   }
 
   addProductToCart() {
-    let cart = getLocalStorage("so-cart") || [];
+    const cart = getLocalStorage("so-cart") || [];
 
-    const existingProduct = cart.find((item) => item.Id === this.product.Id);
+    const existing = cart.find((item) => item.Id === this.product.Id);
 
-    if (existingProduct) {
-      existingProduct.quantity = (existingProduct.quantity || 1) + 1;
+    if (existing) {
+      existing.quantity = (existing.quantity || 1) + 1;
     } else {
       cart.push({
         ...this.product,
@@ -33,23 +33,20 @@ export default class ProductDetails {
     }
 
     setLocalStorage("so-cart", cart);
-  }
-
-  addToCartHandler() {
-    this.addProductToCart();
+    updateCartCount(); // refresh badge immediately after adding to cart
   }
 
   setupAddToCartButton() {
-  document.getElementById("addToCart").addEventListener("click", () => {
-    this.addProductToCart();
-    updateCartCount();
-    animateCartIcon();
-  });
-}
+    const btn = document.getElementById("addToCart");
+    if (btn) {
+      btn.addEventListener("click", () => {
+        this.addProductToCart();
+      });
+    }
+  }
 
   renderProductDetails() {
     const main = document.querySelector("main");
-
     main.innerHTML = `
   <section class="product-detail">
     <h3>${this.product.Brand.Name}</h3>
@@ -65,4 +62,3 @@ export default class ProductDetails {
   }
 }
 
-updateCartCount();

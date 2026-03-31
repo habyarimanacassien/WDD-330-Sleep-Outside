@@ -52,4 +52,22 @@ export default class ProductData {
 
     throw new Error(`Product with id ${id} not found in local data`);
   }
+
+  // Submits the order to the server. Falls back to a local log if no server URL is set.
+  async checkout(order) {
+    if (!baseURL) {
+      console.log("No server URL set. Logging order locally:", order);
+      return { success: true, message: "Order logged locally." };
+    }
+
+    const response = await fetch(`${ensureTrailingSlash(baseURL)}checkout`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(order),
+    });
+    return await convertToJson(response);
+  }
 }
+
+
+
