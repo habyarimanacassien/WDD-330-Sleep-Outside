@@ -636,6 +636,16 @@ main {
 }
 
 /* Welcome Banner */
+.welcome-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  background-color: var(--secondary-color);
+  color: white;
+  padding: 0.75rem 1.25rem;
+}
+
 .welcome-banner__content {
   display: flex;
   align-items: center;

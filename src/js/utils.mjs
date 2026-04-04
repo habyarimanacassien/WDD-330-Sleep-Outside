@@ -29,7 +29,13 @@ export function getParam(param) {
   return urlParams.get(param);
 }
 
-export function renderListWithTemplate(templateFn, parentElement, list, position = "beforeend", clear = true) {
+export function renderListWithTemplate(
+  templateFn,
+  parentElement,
+  list,
+  position = "beforeend",
+  clear = true,
+) {
   if (!parentElement || !templateFn || !Array.isArray(list)) return;
   if (clear) parentElement.innerHTML = "";
   list.forEach((item) => {
@@ -53,8 +59,8 @@ async function loadTemplate(path) {
 }
 
 export async function loadHeaderFooter() {
-  const headerTemplate = await loadTemplate("/partials/header.html")
-  const footerTemplate = await loadTemplate("/partials/footer.html")
+  const headerTemplate = await loadTemplate("/partials/header.html");
+  const footerTemplate = await loadTemplate("/partials/footer.html");
 
   const headerElement = document.getElementById("main-header");
   const footerElement = document.getElementById("main-footer");
@@ -76,25 +82,21 @@ export function alertMessage(message, scroll = true) {
   alert.innerHTML = `<p>${message}</p><span>X</span>`;
 
   // Click listener - only dismiss if the X was clicked
-  alert.addEventListener("click", function(e) {
+  alert.addEventListener("click", function (e) {
     if (e.target.tagName === "SPAN") {
       document.querySelector("main").removeChild(this);
     }
   });
-  
+
   // Prepend to <main> so it appears at the top of the page content
   document.querySelector("main").prepend(alert);
 
   if (scroll) window.scrollTo(0, 0);
 }
 
-
 export function showWelcomeBanner() {
   // Check if the visitor has been here before
   if (localStorage.getItem("so-visited")) return; // Exit if they have
-  
-  // Mark them as a returning visitor immediately
-  localStorage.setItem("so-visited", "true");
 
   // Build the banner
   const banner = document.createElement("div");
@@ -110,13 +112,14 @@ export function showWelcomeBanner() {
     <span class="welcome-banner__close">X</span>
   `;
 
-  // Dismiss on click of the X  
+  // Dismiss on click of the X and mark visitor as seen so it won't show again
   banner.addEventListener("click", function (e) {
     if (e.target.classList.contains("welcome-banner__close")) {
+      localStorage.setItem("so-visited", "true");
       this.remove();
     }
   });
-  
+
   // Prepend to <main> so it appears at the top of the page content
   const main = document.querySelector("main");
   if (main) main.prepend(banner);
